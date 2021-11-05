@@ -1,0 +1,60 @@
+// set as java application
+apply plugin: 'application'
+
+//define main class
+mainClassName = 'Concentration'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation group: 'org.json', name: 'json', version: '20200518'
+}
+
+task Gui(type: JavaExec) {
+  group 'gui'
+  description 'Displays a GUI for a game of concentration'
+
+  classpath = sourceSets.main.runtimeClasspath
+
+  main = 'Assignment3Starter.ClientGui'
+  standardInput = System.in
+}
+
+task runServer(type: JavaExec) {
+	group 'tcp'
+	description 'Displays a GUI for a picture guessing game.'
+	
+	classpath = sourceSets.main.runtimeClasspath
+	
+	main = 'Assignment3Starter.TCP.Server'
+	standardInput = System.in
+	
+	if(project.hasProperty("port")) {
+		args(project.getProperty('port'));
+	} else {
+		args(8080);
+	}
+	
+}
+
+task runClient(type: JavaExec) {
+	group 'tcp'
+	description 'Client'
+	
+	classpath = sourceSets.main.runtimeClasspath
+	
+	main = 'Assignment3Starter.ClientGui'
+	standardInput = System.in
+	
+	if(project.hasProperty("port") && project.hasProperty("host")) {
+		args(project.getProperty('port'), project.getProperty('host'));
+	} else if(project.hasProperty("port")) {
+		args(project.getProperty('port'), "localhost");
+	} else if(project.hasProperty("host")) {
+		args(8080, project.getProperty('host'));
+	} else {
+		args(8080, "localhost");
+	}
+}
